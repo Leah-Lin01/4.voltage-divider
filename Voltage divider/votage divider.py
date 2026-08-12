@@ -440,7 +440,7 @@ with col2:
                             f"Vin： `{vin:.2f} V` ｜ Vout（分壓節點）： `{vout:.2f} V` "
                         )
                     else:
-                        st.info(f"工作電壓： `{this_r_voltage:.8f} V`")
+                        st.info(f"工作電壓： `{this_r_voltage:.2f} V`")
 
                     # 💡 提取前端即將用來顯示
                     r_val = float(component.get('r_value', 0.0))
@@ -480,7 +480,7 @@ with col2:
                             st.code(f"({i_divider * 1000:.3f}mA)² × {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
                         else:
                             st.code(f"({this_r_voltage:.1f}V)² / {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
-                        st.markdown(f"* **Pact/Pmax**： `{safe_stress_ratio*100:.1f}%` (Derating標準: {DERATING_TARGET*100}%)")
+                        st.markdown(f"* **Pact/Pmax**： `{safe_stress_ratio*100:.8f}%` (Derating標準: {DERATING_TARGET*100}%)")
                         
                         if component.get('is_pass', False):
                             st.success(f"🟢 **PASS (符合Derating標準)**")
