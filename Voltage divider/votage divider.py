@@ -459,11 +459,11 @@ with col2:
                         st.markdown(f"* **Pact/Pmax計算 ({formula_label})**：")
                         # 全部用純文字印出
                         if is_divider:
-                            st.code(f"({i_divider * 1000:.3f}mA)² × 0.002Ω (0歐姆) = 0.0000")
+                            st.code(f"({i_divider * 1000:.3f}mA)² × 0.002Ω (0 ohm) = 0.0000")
                         else:
-                            st.code(f"({this_r_voltage:.1f}V)² / 0.002Ω (0歐姆) = 0.0000")
+                            st.code(f"({this_r_voltage:.1f}V)² / 0.002Ω (0 ohm) = 0.0000")
                         st.markdown(f"* **Pact/Pmax**： `0.0%` (降額標準: {DERATING_TARGET*100}%)")
-                        st.success(f"🟢 **PASS (0歐姆跳線)**")
+                        st.success(f"🟢 **PASS (0 ohm跳線)**")
                     
                     else:
                         # 只有在阻值大於0、且最大功率大於0的絕對安全狀態下，才放行跑正常電阻顯示
