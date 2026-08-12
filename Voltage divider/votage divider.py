@@ -432,7 +432,7 @@ with col2:
                     i_divider = component.get('divider_current', 0.0)
 
                     if is_divider:
-                        role_label = "上橋 TOP（接電源）" if component.get('divider_role') == 'TOP' else "下橋 BOT（接地）"
+                        role_label = "TOP（接電源）" if component.get('divider_role') == 'TOP' else "BOT（接地）"
                         vin = component.get('divider_vin', this_r_voltage)
                         vout = component.get('divider_vout', 0.0)
                         st.info(
