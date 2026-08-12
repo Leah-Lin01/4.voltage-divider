@@ -140,7 +140,7 @@ def scan_image_with_vlm(image):
 # ==============================================================================
 #  獨立計算公式程式 (從文字行內抽離各自電壓進行 Pact 計算)
 # ==============================================================================
-def calculate_derating_metrics(user_text, derating_target=0.80):
+def calculate_derating_metrics(user_text, derating_target=0.70):
     lines = user_text.split('\n')
     results = []
 
@@ -366,7 +366,7 @@ def calculate_derating_metrics(user_text, derating_target=0.80):
 st.set_page_config(layout="wide", page_title="Derating")
 st.title("Derating Check")
 
-DERATING_TARGET = 0.80
+DERATING_TARGET = 0.70
 
 if "realtime_user_text" not in st.session_state:
     st.session_state.realtime_user_text = ""
@@ -437,10 +437,10 @@ with col2:
                         vout = component.get('divider_vout', 0.0)
                         st.info(
                             f"分壓： {role_label}\n\n"
-                            f"Vin： `{vin:.2f} V` ｜ Vout（分壓節點）： `{vout:.2f} V` ｜ "
+                            f"Vin： `{vin:.2f} V` ｜ Vout（分壓節點）： `{vout:.2f} V` "
                         )
                     else:
-                        st.info(f"工作電壓： `{this_r_voltage:.1f} V`")
+                        st.info(f"工作電壓： `{this_r_voltage:.8f} V`")
 
                     # 💡 提取前端即將用來顯示
                     r_val = float(component.get('r_value', 0.0))
@@ -476,10 +476,7 @@ with col2:
                         # 在執行字串格式化列印前，做前端最後的雙重除法安全檢查
                         safe_stress_ratio = component.get('stress_ratio', 0.0)
 
-                        if is_divider:
-                            st.code(f"({i_divider * 1000:.3f}mA)² × {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
-                        else:
-                            st.code(f"({this_r_voltage:.1f}V)² / {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
+                        st.code(f"({this_r_voltage:.1f}V)² / {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
                         st.markdown(f"* **Pact/Pmax**： `{safe_stress_ratio*100:.1f}%` (Derating標準: {DERATING_TARGET*100}%)")
                         
                         if component.get('is_pass', False):
