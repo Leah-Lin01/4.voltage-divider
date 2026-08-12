@@ -476,9 +476,9 @@ with col2:
                         # 在執行字串格式化列印前，做前端最後的雙重除法安全檢查
                         safe_stress_ratio = component.get('stress_ratio', 0.0)
 
-                        if is_divider:
-                            st.code(f"({i_divider * 1000:.3f}mA)² × {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
-                        else:
+                        #if is_divider:
+                            #st.code(f"({i_divider * 1000:.3f}mA)² × {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
+                       # else:
                             st.code(f"({this_r_voltage:.1f}V)² / {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
                         st.markdown(f"* **Pact/Pmax**： `{safe_stress_ratio*100:.8f}%` (Derating標準: {DERATING_TARGET*100}%)")
                         
