@@ -322,7 +322,9 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
         r_bot = bot["val_num"]
         vin = top["voltage_used"]  # 以 TOP 電阻標註的電壓作為分壓輸入電壓 Vin
 
+        #計算分壓電路的總電壓
         total_r = r_top + r_bot
+        #避免總電阻為0
         if total_r <= 0:
             total_r = 0.002
 
@@ -334,6 +336,30 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
             p_max = comp["p_max"]
             is_jumper = comp["is_jumper"]
 
+        # 計算每顆電阻實際承受的電壓
+        # TOP：Vin - Vout
+        # BOT：Vout
+        if is_jumper:
+            voltage_actual = 0.0
+
+        elif role_name == "TOP":
+            voltage_actual = vin - vout
+
+        elif role_name == "BOT":
+            voltage_actual = vout
+
+        else:
+            voltage_actual = vin
+   
+        # 使用實際電壓重新計算功耗：P = V² / R
+
+        if is_jumper:
+            p_act = 0.0
+
+        else:
+            p_act = (voltage_actual ** 2) / r
+
+        # ======================================================================
             # 用分壓後的實際電流 I 重新計算功耗： P = I² × R
             p_act = (i_divider ** 2) * r
             p_act_display = 0.0 if is_jumper else p_act
