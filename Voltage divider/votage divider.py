@@ -360,28 +360,32 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
             p_act = (voltage_actual ** 2) / r
 
         # ======================================================================
-            # 用分壓後的實際電流 I 重新計算功耗： P = I² × R
-            p_act = (i_divider ** 2) * r
-            p_act_display = 0.0 if is_jumper else p_act
-            stress_ratio = 0.0 if is_jumper else p_act / p_max
-            is_pass = True if is_jumper else stress_ratio <= derating_target
+        p_act_display = 0.0 if is_jumper else p_act
+        stress_ratio = 0.0 if is_jumper else p_act / p_max
+        is_pass = True if is_jumper else stress_ratio <= derating_target
 
-            results.append({
-                "name": comp["name"],
-                "r_value": 0.0 if is_jumper else r,
-                "calc_r_value": r,
-                "voltage_used": vin,
-                "p_act": p_act_display,
-                "p_max": p_max,
-                "stress_ratio": stress_ratio,
-                "is_pass": is_pass,
-                "is_jumper": is_jumper,
-                "is_divider": True,
-                "divider_group": group_name,
-                "divider_role": role_name,
-                "divider_vin": vin,
-                "divider_vout": vout,
-                "divider_current": i_divider,
+        results.append({
+            "name": comp["name"],
+            "r_value": 0.0 if is_jumper else r,
+            "calc_r_value": r,
+
+            # 這顆電阻實際承受的電壓
+            "voltage_used": voltage_actual,
+
+            "p_act": p_act_display,
+            "p_max": p_max,
+            "stress_ratio": stress_ratio,
+            "is_pass": is_pass,
+
+            "is_jumper": is_jumper,
+            "is_divider": True,
+            "divider_group": group_name,
+            "divider_role": role_name,
+
+            # 分壓電路資訊
+            "divider_vin": vin,
+            "divider_vout": vout,
+            "divider_current": i_divider,
             })
 
     return results
