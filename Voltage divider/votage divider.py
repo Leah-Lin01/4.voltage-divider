@@ -526,17 +526,17 @@ with col2:
                         # 只有在阻值大於0、且最大功率大於0的絕對安全狀態下，才放行跑正常電阻顯示
                         st.markdown(f"* **電阻值 (R)**： `{r_val:.1f} Ω` ")
                         st.markdown(f"* **量測工作功耗 (Pact)**： `{p_act:.6f} W` ")
+                        st.code(
+                            f"({this_r_voltage:.4f}V)² / {r_val:.0f}Ω "
+                            f"= {p_act:.6f}W"
+                        )
+
                         st.markdown(f"* **額定最大功率 (Pmax)**： `{p_max:.4f} W` ")
                     
                         st.markdown(f"* **Pact/Pmax計算 ({formula_label})**：")
                         
                         # 在執行字串格式化列印前，做前端最後的雙重除法安全檢查
                         safe_stress_ratio = component.get('stress_ratio', 0.0)
-
-                        st.code(
-                            f"({this_r_voltage:.4f}V)² / {r_val:.0f}Ω "
-                            f"= {p_act:.6f}W"
-                        )
                         st.code(
                             f"{p_act:.6f}W / {p_max:.4f}W "
                             f"= {safe_stress_ratio:.6f}"
