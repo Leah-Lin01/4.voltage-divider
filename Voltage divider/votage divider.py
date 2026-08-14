@@ -343,57 +343,56 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
             p_max = comp["p_max"]
             is_jumper = comp["is_jumper"]
 
-        # 計算每顆電阻實際承受的電壓
-        # TOP：Vin - Vout
-        # BOT：Vout
-        if is_jumper:
-            voltage_actual = 0.0
+            # 計算每顆電阻實際承受的電壓
+            # TOP：Vin - Vout
+            # BOT：Vout
+            if is_jumper:
+                voltage_actual = 0.0
 
-        elif role_name == "TOP":
-            voltage_actual = vin - vout
+            elif role_name == "TOP":
+                voltage_actual = vin - vout
 
-        elif role_name == "BOT":
-            voltage_actual = vout
+            elif role_name == "BOT":
+                voltage_actual = vout
 
-        else:
-            voltage_actual = vin
+            else:
+                voltage_actual = vin
    
-        # 使用實際電壓重新計算功耗：P = V² / R
+            # 使用實際電壓重新計算功耗：P = V² / R
 
-        if is_jumper:
-            p_act = 0.0
+            if is_jumper:
+                p_act = 0.0
 
-        else:
-            p_act = (voltage_actual ** 2) / r
+            else:
+                p_act = (voltage_actual ** 2) / r
 
-        # ======================================================================
-        p_act_display = 0.0 if is_jumper else p_act
-        stress_ratio = 0.0 if is_jumper else p_act / p_max
-        is_pass = True if is_jumper else stress_ratio <= derating_target
+            p_act_display = 0.0 if is_jumper else p_act
+            stress_ratio = 0.0 if is_jumper else p_act / p_max
+            is_pass = True if is_jumper else stress_ratio <= derating_target
         
-        # 儲存 TOP / BOT 各自的結果
-        results.append({
-            "name": comp["name"],
-            "r_value": 0.0 if is_jumper else r,
-            "calc_r_value": r,
+            # 儲存 TOP / BOT 各自的結果
+            results.append({
+                "name": comp["name"],
+                "r_value": 0.0 if is_jumper else r,
+                "calc_r_value": r,
 
-            # 這顆電阻實際承受的電壓
-            "voltage_used": voltage_actual,
+                # 這顆電阻實際承受的電壓
+                "voltage_used": voltage_actual,
 
-            "p_act": p_act_display,
-            "p_max": p_max,
-            "stress_ratio": stress_ratio,
-            "is_pass": is_pass,
+                "p_act": p_act_display,
+                "p_max": p_max,
+                "stress_ratio": stress_ratio,
+                "is_pass": is_pass,
 
-            "is_jumper": is_jumper,
-            "is_divider": True,
-            "divider_group": group_name,
-            "divider_role": role_name,
+                "is_jumper": is_jumper,
+                "is_divider": True,
+                "divider_group": group_name,
+                "divider_role": role_name,
 
-            # 分壓電路資訊
-            "divider_vin": vin,
-            "divider_vout": vout,
-            "divider_current": i_divider,
+                # 分壓電路資訊
+                "divider_vin": vin,
+                "divider_vout": vout,
+                "divider_current": i_divider,
             })
 
     return results
