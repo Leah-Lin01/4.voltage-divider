@@ -448,7 +448,10 @@ with col2:
                 current_text = st.session_state.realtime_user_text
                 
                 # 呼叫計算核心
-                report_card = calculate_derating_metrics(current_text, DERATING_TARGET)
+                report_card = calculate_derating_metrics(
+                    current_text,
+                    DERATING_TARGET
+                )
                 
                 st.success("✅ 計算完成！")
                 st.write("---")
@@ -464,27 +467,46 @@ with col2:
                     if component.get('divider_warning'):
                         st.warning(f"⚠️ {component['divider_warning']}")
 
-                    is_divider = component.get('is_divider', False)
-                    this_r_voltage = component.get('voltage_used', 3.3)
-                    i_divider = component.get('divider_current', 0.0)
+                    # 判斷是否為分壓電阻
+                    is_divider = component.get('is_divider', False)   
+                    
+                    # 這一顆電阻實際承受的工作電壓
+                    this_r_voltage = float(
+                        component.get('voltage_used', 3.3)
+                    )
+                    vin = float(
+                        component.get('divider_vin', 0.0)
+                    )
+                    vout = float(
+                        component.get('divider_vout', 0.0)
+                    )
 
+                    # 顯示電壓資訊
                     if is_divider:
-                        role_label = "TOP（接電源）" if component.get('divider_role') == 'TOP' else "BOT（接地）"
-                        vin = component.get('divider_vin', this_r_voltage)
-                        vout = component.get('divider_vout', 0.0)
+                        role = component.get('divider_role', '')
+
+                        if role == 'TOP':
+                            role_label = "TOP（上方電阻）"
+                        else:
+                            role_label = "BOT（下方電阻）"
+
                         st.info(
-                            f"分壓： {role_label}\n\n"
-                            f"Vin： `{vin:.2f} V` ｜ Vout（分壓節點）： `{vout:.2f} V` "
+                            f"分壓：{role_label}\n\n"
+                            f"Vin：`{vin:.2f} V` ｜ "
+                            f"Vout（分壓節點）：`{vout:.2f} V`\n\n"
+                            f"此電阻實際承受電壓："
+                            f"`{this_r_voltage:.2f} V`"
                         )
+                        
                     else:
                         st.info(f"工作電壓： `{this_r_voltage:.2f} V`")
 
-                    # 💡 提取前端即將用來顯示
+                    # 結果顯示
                     r_val = float(component.get('r_value', 0.0))
                     p_max = float(component.get('p_max', 0.0625))
                     p_act = float(component.get('p_act', 0.0))
 
-                    formula_label = "I² × R / Pmax" if is_divider else "V² / R / Pmax"
+                    formula_label = "(V² × R) / Pmax" 
 
                     # 檢查是否為跳線，或者分母是否包含任何0
                     if component.get('is_jumper', False) or r_val <= 0 or p_max <= 0:
@@ -495,13 +517,11 @@ with col2:
                         
                         st.markdown(f"* **Pact/Pmax計算 ({formula_label})**：")
                         # 全部用純文字印出
-                        if is_divider:
-                            st.code(f"({i_divider * 1000:.3f}mA)² × 0.002Ω (0 ohm) = 0.0000")
-                        else:
-                            st.code(f"({this_r_voltage:.1f}V)² / 0.002Ω (0 ohm) = 0.0000")
+                        st.code("0Ω Jumper，不進行計算")
                         st.markdown(f"* **Pact/Pmax**： `0.0%` (降額標準: {DERATING_TARGET*100}%)")
                         st.success(f"🟢 **PASS (0 ohm跳線)**")
-                    
+
+                    #正常電阻值計算
                     else:
                         # 只有在阻值大於0、且最大功率大於0的絕對安全狀態下，才放行跑正常電阻顯示
                         st.markdown(f"* **電阻值 (R)**： `{r_val:.1f} Ω` ")
@@ -513,10 +533,14 @@ with col2:
                         # 在執行字串格式化列印前，做前端最後的雙重除法安全檢查
                         safe_stress_ratio = component.get('stress_ratio', 0.0)
 
-                        if is_divider:
-                            st.code(f"({i_divider * 1000:.3f}mA)² × {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
-                        else:
-                            st.code(f"({this_r_voltage:.1f}V)² / {r_val:.0f}Ω / {p_max:.4f}W = {safe_stress_ratio:.4f}")
+                        st.code(
+                            f"({this_r_voltage:.4f}V)² / {r_val:.0f}Ω "
+                            f"= {p_act:.6f}W"
+                        )
+                        st.code(
+                            f"{p_act:.6f}W / {p_max:.4f}W "
+                            f"= {safe_stress_ratio:.6f}"
+                        )
                         st.markdown(f"* **Pact/Pmax**： `{safe_stress_ratio*100:.8f}%` (Derating標準: {DERATING_TARGET*100}%)")
                         
                         if component.get('is_pass', False):
