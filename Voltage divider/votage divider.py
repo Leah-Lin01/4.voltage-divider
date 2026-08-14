@@ -299,10 +299,16 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
                 r = comp["val_num"]
                 p_max = comp["p_max"]
                 is_jumper = comp["is_jumper"]
-                p_act = (v ** 2) / r
+
+                if is_jumper:
+                    p_act = 0.0
+                else:
+                     p_act = (v ** 2) / r            
+                
                 p_act_display = 0.0 if is_jumper else p_act
                 stress_ratio = 0.0 if is_jumper else p_act / p_max
                 is_pass = True if is_jumper else stress_ratio <= derating_target
+                
                 results.append({
                     "name": comp["name"],
                     "r_value": 0.0 if is_jumper else r,
@@ -318,6 +324,7 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
                 })
             continue
 
+        # 取得 TOP / BOT 電阻資訊
         r_top = top["val_num"]
         r_bot = bot["val_num"]
         vin = top["voltage_used"]  # 以 TOP 電阻標註的電壓作為分壓輸入電壓 Vin
@@ -363,7 +370,8 @@ def calculate_derating_metrics(user_text, derating_target=0.70):
         p_act_display = 0.0 if is_jumper else p_act
         stress_ratio = 0.0 if is_jumper else p_act / p_max
         is_pass = True if is_jumper else stress_ratio <= derating_target
-
+        
+        # 儲存 TOP / BOT 各自的結果
         results.append({
             "name": comp["name"],
             "r_value": 0.0 if is_jumper else r,
