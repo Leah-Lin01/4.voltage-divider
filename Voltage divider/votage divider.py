@@ -472,7 +472,7 @@ with col2:
                     
                     # 這一顆電阻實際承受的工作電壓
                     this_r_voltage = float(
-                        component.get('voltage_used', 3.3)
+                        component.get('voltage_used')
                     )
                     vin = float(
                         component.get('divider_vin', 0.0)
