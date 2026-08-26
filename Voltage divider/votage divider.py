@@ -465,6 +465,9 @@ with col3:
                 
                 if not report_card:
                     st.warning("⚠️ 文字框內無有效的電阻元件格式，請確認格式（如：HR1=10K_1/16W_3.3V）。")
+                    
+                 # height=500 代表高度 500 像素，超過就會出現獨立滾輪
+                with st.container(height=500):
             
                 # 尋找所有算好的結果
                 for component in report_card:
