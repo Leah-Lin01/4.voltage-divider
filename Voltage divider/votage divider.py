@@ -408,7 +408,7 @@ DERATING_TARGET = 0.70
 if "realtime_user_text" not in st.session_state:
     st.session_state.realtime_user_text = ""
 
-col1, col2 = st.columns(2)
+col1, col2, col3 = st.columns(3)
 
 with col1:
     st.header("Step 1：上傳電路圖")
@@ -418,6 +418,7 @@ with col1:
         image = Image.open(uploaded_file)
         st.image(image, caption="已讀取電路圖", use_container_width=True)
         
+with col2:
         st.header("Step 2：辨識結果")
         
         # 觸發 VLM 智慧掃描辨識
@@ -439,7 +440,7 @@ with col1:
             "分壓電路格式：在兩顆串聯電阻尾端分別標示 _TOP（接電源）/ _BOT（接地）"
             )
 
-with col2:
+with col3:
     st.header("Step 3：Derating 分析")
     if uploaded_file and st.button("開始計算Derating判定", type="primary"):
         with st.spinner("正在讀取並執行計算..."):
