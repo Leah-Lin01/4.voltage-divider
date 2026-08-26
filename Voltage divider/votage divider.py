@@ -470,7 +470,7 @@ with col3:
             
                 # 尋找所有算好的結果
                     for component in report_card:
-                        st.subheader(f"🔍 元件： {component['name']}")
+                         st.info(f"🔍 元件： {component['name']}")
 
                     # 分壓配對不完整時的提醒
                         if component.get('divider_warning'):
