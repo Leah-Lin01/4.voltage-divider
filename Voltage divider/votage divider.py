@@ -419,25 +419,31 @@ with col1:
         st.image(image, caption="已讀取電路圖", use_container_width=True)
         
 with col2:
-        st.header("Step 2：辨識結果")
-        
-        # 觸發 VLM 智慧掃描辨識
+    st.header("Step 2：辨識結果")
+    
+    # 💡 修正核心：先檢查到底有沒有上傳圖片
+    if not uploaded_file:
+        st.info("👈 請先在 Step 1 上傳電路圖圖片。")
+    else:
+        # 只有在確定有圖片的情況下，才允許觸發 VLM 智慧掃描辨識
         if "clean_ocr_output" not in st.session_state or st.button("🚀 重新啟動圖片分析"):
             with st.spinner("🧠 正在進行線路推理中..."):
-                # 掃描完成後，同步將結果更新到 OCR 備份與當前即時文字狀態中
+                # 這時候 image 絕對存在，不會再噴 NameError 了！
                 vlm_result = scan_image_with_vlm(image)
                 st.session_state.clean_ocr_output = vlm_result
                 st.session_state.realtime_user_text = vlm_result  # 同步初始化文字框內容
         
-        # 讓使用者可以即時修改與刪除 (綁定 key 機制)
-        st.text_area(
-            "元件與電壓清單 (若有小誤差可手動修改)：",
-            value=st.session_state.realtime_user_text,
-            height=250,
-            key="realtime_user_text"  # 加上固定 key，由 st.session_state 主導管理
-        )
-        st.caption(
-            "分壓電路格式：在兩顆串聯電阻尾端分別標示 _TOP（接電源）/ _BOT（接地）"
+        # 確保 realtime_user_text 已經初始化，才可以渲染 text_area
+        if "realtime_user_text" in st.session_state:
+            # 讓使用者可以即時修改與刪除 (綁定 key 機制)
+            st.text_area(
+                "元件與電壓清單 (若有小誤差可手動修改)：",
+                value=st.session_state.realtime_user_text,
+                height=250,
+                key="realtime_user_text"  # 加上固定 key，由 st.session_state 主導管理
+            )
+            st.caption(
+                "分壓電路格式：在兩顆串聯電阻尾端分別標示 _TOP（接電源）/ _BOT（接地）"
             )
 
 with col3:
