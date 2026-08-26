@@ -461,7 +461,6 @@ with col3:
                 )
                 
                 st.success("✅ 計算完成！")
-                st.write("---")
                 
                 if not report_card:
                     st.warning("⚠️ 文字框內無有效的電阻元件格式，請確認格式（如：HR1=10K_1/16W_3.3V）。")
