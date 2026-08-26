@@ -514,29 +514,29 @@ with col3:
                     # 檢查是否為跳線，或者分母是否包含任何0
                         if component.get('is_jumper', False) or r_val <= 0 or p_max <= 0:
                         # 只要發現任何一個分母是 0，或者標記為跳線，100% 封鎖原本的算式！
-                            st.markdown(f"* **阻值 (R)**： `0.0 Ω` (jump)")
-                            st.markdown(f"* **額定最大功率 (PMAX)**： `{p_max if p_max > 0 else 0.0625:.4f} W` ")
-                            st.markdown(f"* **量測工作功耗 (Pact)**： `0.000000 W` ")                        
+                            st.markdown(f"* 阻值 (R)： `0.0 Ω` (jump)")
+                            st.markdown(f"* 額定最大功率 (PMAX)： `{p_max if p_max > 0 else 0.0625:.4f} W` ")
+                            st.markdown(f"* 量測工作功耗 (Pact)： `0.000000 W` ")                        
                         
-                            st.markdown(f"* **Pact/Pmax計算 ({formula_label})**：")
+                            st.markdown(f"* Pact/Pmax計算 ({formula_label})：")
                         # 全部用純文字印出
                             st.code("0Ω Jumper，不進行計算")
-                            st.markdown(f"* **Pact/Pmax**： `0.0%` (降額標準: {DERATING_TARGET*100}%)")
+                            st.markdown(f"* Pact/Pmax： `0.0%` (降額標準: {DERATING_TARGET*100}%)")
                             st.success(f"🟢 **PASS (0 ohm跳線)**")
 
                     #正常電阻值計算
                         else:
                         # 只有在阻值大於0、且最大功率大於0的絕對安全狀態下，才放行跑正常電阻顯示
-                            st.markdown(f"* **電阻值 (R)**： `{r_val:.1f} Ω` ")
-                            st.markdown(f"* **額定最大功率 (Pmax)**： `{p_max:.4f} W` ")
+                            st.markdown(f"* 電阻值 (R)： `{r_val:.1f} Ω` ")
+                            st.markdown(f"* 額定最大功率 (Pmax)： `{p_max:.4f} W` ")
                         
-                            st.markdown(f"* **量測工作功耗 (Pact)**： `{p_act:.6f} W` ")
+                            st.markdown(f"* 量測工作功耗 (Pact)： `{p_act:.6f} W` ")
                             st.code(
                                 f"({this_r_voltage:.4f}V)² / {r_val:.0f}Ω "
                                 f"= {p_act:.6f}W"
                             )                        
                     
-                            st.markdown(f"* **Pact/Pmax計算 ({formula_label})**：")
+                            st.markdown(f"* Pact/Pmax計算 ({formula_label})：")
                         
                         # 在執行字串格式化列印前，做前端最後的雙重除法安全檢查
                             safe_stress_ratio = component.get('stress_ratio', 0.0)
@@ -544,7 +544,7 @@ with col3:
                                 f"{p_act:.6f}W / {p_max:.4f}W "
                                 f"= {safe_stress_ratio:.6f}"
                             )
-                            st.markdown(f"* **Pact/Pmax**： `{safe_stress_ratio*100:.8f}%` (Derating標準: {DERATING_TARGET*100}%)")
+                            st.markdown(f"* Pact/Pmax： `{safe_stress_ratio*100:.8f}%` (Derating標準: {DERATING_TARGET*100}%)")
                         
                             if component.get('is_pass', False):
                                 st.success(f"🟢 **PASS (符合Derating標準)**")
